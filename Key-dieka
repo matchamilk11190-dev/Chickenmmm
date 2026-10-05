@@ -1,0 +1,1692 @@
+-- Dịch vụ hệ thống
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local TextChatService = game:GetService("TextChatService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- CÀI ĐẶT KEY CHÍNH CỦA HỆ THỐNG RETDIK
+local CORRECT_KEY = "retdik"
+
+-- 1. TẠO GIAO DIỆN HỆ THỐNG KEY RETDIK (CÓ HÌNH NỀN ID: 6184866078)
+local KeyGui = Instance.new("ScreenGui")
+KeyGui.Name = "RetdikKeySystem"
+KeyGui.Parent = CoreGui
+KeyGui.IgnoreGuiInset = true
+
+local KeyMainFrame = Instance.new("Frame")
+KeyMainFrame.Name = "MainFrame"
+KeyMainFrame.Size = UDim2.new(0, 420, 0, 260)
+KeyMainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+KeyMainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+KeyMainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+KeyMainFrame.BackgroundTransparency = 0.2
+KeyMainFrame.BorderSizePixel = 0
+KeyMainFrame.ClipsDescendants = true
+KeyMainFrame.Parent = KeyGui
+
+-- Thêm hình nền ID: 6184866078 cho bảng Key
+local KeyBgImage = Instance.new("ImageLabel")
+KeyBgImage.Name = "KeyBackground"
+KeyBgImage.Size = UDim2.new(1, 0, 1, 0)
+KeyBgImage.BackgroundTransparency = 1
+KeyBgImage.Image = "rbxassetid://6184866078"
+KeyBgImage.ScaleType = Enum.ScaleType.Crop
+KeyBgImage.ZIndex = 0
+KeyBgImage.Parent = KeyMainFrame
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 10)
+MainCorner.Parent = KeyMainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(59, 130, 246)
+MainStroke.Thickness = 1.5
+MainStroke.Parent = KeyMainFrame
+
+-- Tiêu đề Key System
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(1, 0, 0, 50)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "RETDIK · KEY ACCESS (@Andes)"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextSize = 18
+TitleLabel.Font = Enum.Font.SourceSansBold
+TitleLabel.ZIndex = 2
+TitleLabel.Parent = KeyMainFrame
+
+-- Ô nhập Key (TextBox)
+local KeyTextBox = Instance.new("TextBox")
+KeyTextBox.Size = UDim2.new(1, -40, 0, 45)
+KeyTextBox.Position = UDim2.new(0, 20, 0, 65)
+KeyTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+KeyTextBox.BackgroundTransparency = 0.3
+KeyTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+KeyTextBox.PlaceholderText = "Nhập Key Retdik (hoạt động 24h)..."
+KeyTextBox.PlaceholderColor3 = Color3.fromRGB(180, 180, 180)
+KeyTextBox.Text = ""
+KeyTextBox.TextSize = 15
+KeyTextBox.Font = Enum.Font.SourceSans
+KeyTextBox.ClearTextOnFocus = false
+KeyTextBox.ZIndex = 2
+KeyTextBox.Parent = KeyMainFrame
+
+local BoxCorner = Instance.new("UICorner")
+BoxCorner.CornerRadius = UDim.new(0, 6)
+BoxCorner.Parent = KeyTextBox
+
+-- Thông báo trạng thái Key
+local StatusLabel = Instance.new("TextLabel")
+StatusLabel.Size = UDim2.new(1, 0, 0, 25)
+StatusLabel.Position = UDim2.new(0, 0, 0, 115)
+StatusLabel.BackgroundTransparency = 1
+StatusLabel.Text = ""
+StatusLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
+StatusLabel.TextSize = 14
+StatusLabel.Font = Enum.Font.SourceSansBold
+StatusLabel.ZIndex = 2
+StatusLabel.Parent = KeyMainFrame
+
+-- Nút Xác nhận Key
+local SubmitButton = Instance.new("TextButton")
+SubmitButton.Size = UDim2.new(0.46, 0, 0, 45)
+SubmitButton.Position = UDim2.new(0, 20, 0, 150)
+SubmitButton.BackgroundColor3 = Color3.fromRGB(59, 130, 246)
+SubmitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SubmitButton.Text = "Xác nhận Key"
+SubmitButton.TextSize = 15
+SubmitButton.Font = Enum.Font.SourceSansBold
+SubmitButton.ZIndex = 2
+SubmitButton.Parent = KeyMainFrame
+
+local SubCorner = Instance.new("UICorner")
+SubCorner.CornerRadius = UDim.new(0, 6)
+SubCorner.Parent = SubmitButton
+
+-- Nút Get Key (Sao chép link web Retdik)
+local BypassButton = Instance.new("TextButton")
+BypassButton.Size = UDim2.new(0.46, 0, 0, 45)
+BypassButton.Position = UDim2.new(0.52, 0, 0, 150)
+BypassButton.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+BypassButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+BypassButton.Text = "Get Key"
+BypassButton.TextSize = 15
+BypassButton.Font = Enum.Font.SourceSansBold
+BypassButton.ZIndex = 2
+BypassButton.Parent = KeyMainFrame
+
+local BypCorner = Instance.new("UICorner")
+BypCorner.CornerRadius = UDim.new(0, 6)
+BypCorner.Parent = BypassButton
+
+-- Hiệu ứng xuất hiện khung Key
+KeyMainFrame.Size = UDim2.new(0, 0, 0, 0)
+KeyMainFrame.BackgroundTransparency = 1
+TweenService:Create(KeyMainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    Size = UDim2.new(0, 420, 0, 260),
+    BackgroundTransparency = 0.2
+}):Play()
+
+-- HÀM TẢI TOÀN BỘ SCRIPT CHÍNH SAU KHI VƯỢT QUA KEY
+local function LoadMainHub()
+    local tw = TweenService:Create(KeyMainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 0, 0, 0),
+        BackgroundTransparency = 1
+    })
+    tw:Play()
+    tw.Completed:Connect(function()
+        pcall(function() KeyGui:Destroy() end)
+    end)
+
+    -- Tải thư viện Wind UI
+    local WindUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Footagesus/WindUI/main/dist/main.lua"))()
+
+    -- 1. Tạo cửa sổ chính
+    local Window = WindUI:CreateWindow({
+        Title = "Larade Hub",
+        SubTitle = "Retdik Key System",
+        TabWidth = 160,
+        Size = UDim2.fromOffset(580, 460),
+        Acrylic = false,
+        Theme = "Dark",
+        MinimizeKey = Enum.KeyCode.LeftControl
+    })
+
+    -- Khởi tạo các Tab (Bao gồm Tab từ 1 đến 10)
+    local Tabs = {
+        Home = Window:Tab({ Title = "Home", Icon = "home" }),
+        Combat = Window:Tab({ Title = "Chiến đấu", Icon = "swords" }),
+        VIP = Window:Tab({ Title = "VIP", Icon = "crown" }),
+        ThemeTab = Window:Tab({ Title = "Màu Menu", Icon = "palette" }),
+        ChatTab = Window:Tab({ Title = "Chat", Icon = "message-square" }),
+        Mod = Window:Tab({ Title = "Tab 6 (Mod)", Icon = "shield" }),
+        Anti = Window:Tab({ Title = "Tab 7 (Anti)", Icon = "shield-alert" }),
+        EggTab = Window:Tab({ Title = "Tab 8 (Trứng)", Icon = "egg" }),
+        Evade = Window:Tab({ Title = "Tab 9 (Evade)", Icon = "zap" }),
+        LangTab = Window:Tab({ Title = "Tab 10 (VN/EN)", Icon = "globe" })
+    }
+
+    --- TAB 1: HOME ---
+    local HomeSection = Tabs.Home:Section({ Title = "Trang Chủ" })
+
+    HomeSection:Paragraph({
+        Title = "Larade Hub v1.0",
+        Desc = "Chào mừng bạn đến với Larade Hub! Đã tích hợp hệ thống Retdik Key thành công."
+    })
+
+    HomeSection:Button({
+        Title = "Hiển thị thông báo",
+        Callback = function()
+            WindUI:Notify({
+                Title = "Larade Hub",
+                Content = "Tab Home hoạt động tốt!",
+                Duration = 3
+            })
+        end
+    })
+
+    --- TAB 2: CHIẾN ĐẤU ---
+    local CombatSection = Tabs.Combat:Section({ Title = "Tính Năng Chiến Đấu Cũ" })
+
+    local HitboxEnabled = false
+    local HitboxSize = 10
+    local HitboxTeamCheck = false
+    local CustomSpeed = 16
+    local ESPEnabled = false
+    local NoCooldownEnabled = false
+
+    CombatSection:Toggle({
+        Title = "Bật/Tắt Hitbox",
+        Default = false,
+        Callback = function(state)
+            HitboxEnabled = state
+            WindUI:Notify({ Title = "Hitbox", Content = state and "Đã BẬT Hitbox" or "Đã TẮT Hitbox", Duration = 2 })
+            
+            if not state then
+                pcall(function()
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and player.Character then
+                            local hrp = player.Character:FindFirstChild("HumanoidRootPart")
+                            if hrp then
+                                hrp.Size = Vector3.new(2, 2, 1)
+                                hrp.Transparency = 1
+                                hrp.CanCollide = true
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    })
+
+    CombatSection:Toggle({
+        Title = "Ẩn / Bỏ qua Hitbox đồng đội (Team Check)",
+        Default = false,
+        Callback = function(state)
+            HitboxTeamCheck = state
+            WindUI:Notify({ Title = "Hitbox Team", Content = state and "Đã BẬT ẩn hitbox đồng đội" or "Đã TẮT ẩn hitbox đồng đội", Duration = 2 })
+        end
+    })
+
+    CombatSection:Input({
+        Title = "Kích thước Hitbox (Ghi số)",
+        Placeholder = "VD: 10, 20...",
+        Callback = function(value)
+            local num = tonumber(value)
+            if num then
+                HitboxSize = num
+                WindUI:Notify({ Title = "Hitbox", Content = "Đã đổi kích thước thành: " .. num, Duration = 2 })
+            end
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.5) do
+            if HitboxEnabled then
+                pcall(function()
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and player.Character then
+                            local char = player.Character
+                            local humanoid = char:FindFirstChildOfClass("Humanoid")
+                            local hrp = char:FindFirstChild("HumanoidRootPart")
+                            if humanoid and hrp then
+                                local isTeammate = false
+                                if HitboxTeamCheck and player.Team and LocalPlayer.Team and player.Team == LocalPlayer.Team then
+                                    isTeammate = true
+                                end
+
+                                if humanoid.Health > 0 and not isTeammate then
+                                    hrp.Size = Vector3.new(HitboxSize, HitboxSize, HitboxSize)
+                                    hrp.Transparency = 0.6
+                                    hrp.CanCollide = false
+                                else
+                                    hrp.Size = Vector3.new(2, 2, 1)
+                                    hrp.Transparency = 1
+                                    hrp.CanCollide = true
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    CombatSection:Input({
+        Title = "Tốc độ chạy (Ghi số)",
+        Placeholder = "VD: 16, 50, 100...",
+        Callback = function(value)
+            local num = tonumber(value)
+            if num then
+                CustomSpeed = num
+                pcall(function()
+                    local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                    if humanoid then
+                        humanoid.WalkSpeed = CustomSpeed
+                    end
+                end)
+                WindUI:Notify({ Title = "Tốc độ", Content = "Đã chỉnh tốc độ thành: " .. num, Duration = 2 })
+            end
+        end
+    })
+
+    LocalPlayer.CharacterAdded:Connect(function(char)
+        pcall(function()
+            char:WaitForChild("Humanoid")
+            task.wait(0.2)
+            char:FindFirstChildOfClass("Humanoid").WalkSpeed = CustomSpeed
+        end)
+    end)
+
+    CombatSection:Toggle({
+        Title = "Bật/Tắt ESP",
+        Default = false,
+        Callback = function(state)
+            ESPEnabled = state
+            WindUI:Notify({ Title = "ESP", Content = state and "Đã BẬT ESP" or "Đã TẮT ESP", Duration = 2 })
+            
+            pcall(function()
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer and player.Character then
+                        local char = player.Character
+                        if state then
+                            if not char:FindFirstChild("LaradeESP") then
+                                local hl = Instance.new("Highlight")
+                                hl.Name = "LaradeESP"
+                                hl.FillColor = Color3.fromRGB(255, 0, 0)
+                                hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                hl.FillTransparency = 0.5
+                                hl.Parent = char
+                            end
+                        else
+                            if char:FindFirstChild("LaradeESP") then
+                                char.LaradeESP:Destroy()
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    })
+
+    local function setupPlayerESP(player)
+        player.CharacterAdded:Connect(function(char)
+            if ESPEnabled then
+                task.wait(0.5)
+                pcall(function()
+                    if char and not char:FindFirstChild("LaradeESP") then
+                        local hl = Instance.new("Highlight")
+                        hl.Name = "LaradeESP"
+                        hl.FillColor = Color3.fromRGB(255, 0, 0)
+                        hl.OutlineColor = Color3.fromRGB(255, 255, 255)
+                        hl.FillTransparency = 0.5
+                        hl.Parent = char
+                    end
+                end)
+            end
+        end)
+    end
+
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            setupPlayerESP(p)
+        end
+    end
+    Players.PlayerAdded:Connect(setupPlayerESP)
+
+    CombatSection:Toggle({
+        Title = "No Cooldown (Không giới hạn bắn)",
+        Default = false,
+        Callback = function(state)
+            NoCooldownEnabled = state
+            WindUI:Notify({ Title = "No Cooldown", Content = state and "Đã BẬT No Cooldown" or "Đã TẮT No Cooldown", Duration = 2 })
+        end
+    })
+
+    --- KHU VỰC TÍNH NĂNG MỚI (TAB 2) ---
+    local NewFeaturesSection = Tabs.Combat:Section({ Title = "Tính Năng Mới (Aim Lock, Kill Aura & Freeze)" })
+
+    local FreezeEnemiesEnabled = false
+    NewFeaturesSection:Toggle({
+        Title = "Đứng bất động đối thủ (Freeze Enemies)",
+        Default = false,
+        Callback = function(state)
+            FreezeEnemiesEnabled = state
+            WindUI:Notify({ Title = "Freeze", Content = state and "Đã BẬT Đứng bất động đối thủ" or "Đã TẮT Đứng bất động đối thủ", Duration = 2 })
+            
+            if not state then
+                pcall(function()
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                            player.Character.HumanoidRootPart.Anchored = false
+                        end
+                    end
+                end)
+            end
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.2) do
+            if FreezeEnemiesEnabled then
+                pcall(function()
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and player.Character then
+                            local targetChar = player.Character
+                            local targetHrp = targetChar:FindFirstChild("HumanoidRootPart")
+                            local targetHum = targetChar:FindFirstChildOfClass("Humanoid")
+                            
+                            if targetHrp and targetHum and targetHum.Health > 0 then
+                                targetHrp.Anchored = true
+                                targetHrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    local ShiftLockShootEnabled = false
+    NewFeaturesSection:Toggle({
+        Title = "Bắn thẳng khi khóa shift (Shift Lock Bullet)",
+        Default = false,
+        Callback = function(state)
+            ShiftLockShootEnabled = state
+            WindUI:Notify({ Title = "Shift Shoot", Content = state and "Đã BẬT Bắn thẳng khi khóa shift" or "Đã TẮT", Duration = 2 })
+        end
+    })
+
+    RunService.RenderStepped:Connect(function()
+        if ShiftLockShootEnabled then
+            pcall(function()
+                if UserInputService.MouseBehavior == Enum.MouseBehavior.LockCenter then
+                    local camera = Workspace.CurrentCamera
+                    local char = LocalPlayer.Character
+                    if char and char:FindFirstChildOfClass("Tool") then
+                        local tool = char:FindFirstChildOfClass("Tool")
+                        for _, v in pairs(tool:GetDescendants()) do
+                            if v:IsA("Vector3Value") or v.Name:lower():find("dir") or v.Name:lower():find("look") then
+                                v.Value = camera.CFrame.LookVector
+                            end
+                        end
+                    end
+                end
+            end)
+        end
+    end)
+
+    local AimLockEnabled = false
+    NewFeaturesSection:Toggle({
+        Title = "Aim Lock (Khóa tâm mục tiêu)",
+        Default = false,
+        Callback = function(state)
+            AimLockEnabled = state
+            WindUI:Notify({ Title = "Aim Lock", Content = state and "Đã BẬT Aim Lock" or "Đã TẮT Aim Lock", Duration = 2 })
+        end
+    })
+
+    RunService.RenderStepped:Connect(function()
+        if AimLockEnabled then
+            pcall(function()
+                local camera = Workspace.CurrentCamera
+                local closestPlayer = nil
+                local shortestDist = math.huge
+                
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
+                        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+                        if humanoid and humanoid.Health > 0 then
+                            local pos, onScreen = camera:WorldToViewportPoint(player.Character.Head.Position)
+                            if onScreen then
+                                local dist = (Vector2.new(pos.X, pos.Y) - Vector2.new(camera.ViewportSize.X/2, camera.ViewportSize.Y/2)).Magnitude
+                                if dist < shortestDist then
+                                    shortestDist = dist
+                                    closestPlayer = player
+                                end
+                            end
+                        end
+                    end
+                end
+                
+                if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("Head") then
+                    camera.CFrame = CFrame.new(camera.CFrame.Position, closestPlayer.Character.Head.Position)
+                end
+            end)
+        end
+    end)
+
+    local KillAuraEnabled = false
+    NewFeaturesSection:Toggle({
+        Title = "Kill Aura (Dao = Giết | Súng = Tele & Đứng im)",
+        Default = false,
+        Callback = function(state)
+            KillAuraEnabled = state
+            WindUI:Notify({ Title = "Kill Aura", Content = state and "Đã BẬT Kill Aura" or "Đã TẮT Kill Aura", Duration = 2 })
+            
+            if not state then
+                pcall(function()
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                            player.Character.HumanoidRootPart.Anchored = false
+                        end
+                    end
+                end)
+            end
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.2) do
+            if KillAuraEnabled then
+                pcall(function()
+                    local char = LocalPlayer.Character
+                    if not char then return end
+                    local hrp = char:FindFirstChild("HumanoidRootPart")
+                    local hum = char:FindFirstChildOfClass("Humanoid")
+                    
+                    if not hrp or not hum or hum.Health <= 0 then return end
+                    
+                    local tool = char:FindFirstChildOfClass("Tool")
+                    local isGun = false
+                    if tool then
+                        local toolName = tool.Name:lower()
+                        isGun = toolName:find("gun") or toolName:find("pistol") or toolName:find("rifle") or toolName:find("shotgun") or toolName:find("sniper") or toolName:find("súng") or tool:FindFirstChild("Ammo") or tool:FindFirstChild("Clip")
+                    end
+                    
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and player.Character then
+                            local targetChar = player.Character
+                            local targetHrp = targetChar:FindFirstChild("HumanoidRootPart")
+                            local targetHum = targetChar:FindFirstChildOfClass("Humanoid")
+                            
+                            if targetHrp and targetHum and targetHum.Health > 0 then
+                                local dist = (hrp.Position - targetHrp.Position).Magnitude
+                                
+                                if isGun then
+                                    if dist < 60 then
+                                        targetHrp.CFrame = hrp.CFrame + (hrp.CFrame.LookVector * 4)
+                                        targetHrp.Anchored = true
+                                    end
+                                else
+                                    if dist < 15 then
+                                        targetHum.Health = 0
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    local AutoHealEnabled = false
+    NewFeaturesSection:Toggle({
+        Title = "Auto Heal (Hồi máu vô hạn)",
+        Default = false,
+        Callback = function(state)
+            AutoHealEnabled = state
+            WindUI:Notify({ Title = "Auto Heal", Content = state and "Đã BẬT Hồi Máu Vô Hạn" or "Đã TẮT Hồi Máu Vô Hạn", Duration = 2 })
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.2) do
+            if AutoHealEnabled then
+                pcall(function()
+                    local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                    if hum and hum.Health > 0 and hum.Health < hum.MaxHealth then
+                        hum.Health = hum.MaxHealth
+                    end
+                end)
+            end
+        end
+    end)
+
+    local HealthESPEnabled = false
+    NewFeaturesSection:Toggle({
+        Title = "Health ESP (Hiển thị máu đối thủ)",
+        Default = false,
+        Callback = function(state)
+            HealthESPEnabled = state
+            WindUI:Notify({ Title = "Health ESP", Content = state and "Đã BẬT Health ESP" or "Đã TẮT Health ESP", Duration = 2 })
+            
+            if not state then
+                pcall(function()
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player.Character and player.Character:FindFirstChild("Head") then
+                            local bg = player.Character.Head:FindFirstChild("LaradeHealthESP")
+                            if bg then bg:Destroy() end
+                        end
+                    end
+                end)
+            end
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.5) do
+            if HealthESPEnabled then
+                pcall(function()
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and player.Character then
+                            local char = player.Character
+                            local head = char:FindFirstChild("Head")
+                            local hum = char:FindFirstChildOfClass("Humanoid")
+                            if head and hum then
+                                local bg = head:FindFirstChild("LaradeHealthESP")
+                                if not bg then
+                                    bg = Instance.new("BillboardGui")
+                                    bg.Name = "LaradeHealthESP"
+                                    bg.Size = UDim2.new(0, 120, 0, 40)
+                                    bg.StudsOffset = Vector3.new(0, 2.8, 0)
+                                    bg.AlwaysOnTop = true
+                                    bg.Parent = head
+                                    
+                                    local textLabel = Instance.new("TextLabel")
+                                    textLabel.Name = "Text"
+                                    textLabel.Size = UDim2.new(1, 0, 1, 0)
+                                    textLabel.BackgroundTransparency = 1
+                                    textLabel.TextColor3 = Color3.fromRGB(0, 255, 0)
+                                    textLabel.TextScaled = true
+                                    textLabel.Font = Enum.Font.SourceSansBold
+                                    textLabel.Parent = bg
+                                end
+                                local textLabel = bg:FindFirstChild("Text")
+                                if textLabel then
+                                    textLabel.Text = "HP: " .. math.floor(hum.Health) .. "/" .. math.floor(hum.MaxHealth)
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    local InfZoomEnabled = false
+    NewFeaturesSection:Toggle({
+        Title = "Infinite Zoom (Vô hạn zoom ra xa)",
+        Default = false,
+        Callback = function(state)
+            InfZoomEnabled = state
+            WindUI:Notify({ Title = "Infinite Zoom", Content = state and "Đã BẬT Infinite Zoom" or "Đã TẮT Infinite Zoom", Duration = 2 })
+            pcall(function()
+                if state then
+                    LocalPlayer.CameraMaxZoomDistance = 999999
+                else
+                    LocalPlayer.CameraMaxZoomDistance = 400
+                end
+            end)
+        end
+    })
+
+    local SpinbotEnabled = false
+    NewFeaturesSection:Toggle({
+        Title = "Spinbot (Xoay liên tục)",
+        Default = false,
+        Callback = function(state)
+            SpinbotEnabled = state
+            WindUI:Notify({ Title = "Spinbot", Content = state and "Đã BẬT Spinbot" or "Đã TẮT Spinbot", Duration = 2 })
+        end
+    })
+
+    RunService.Heartbeat:Connect(function()
+        if SpinbotEnabled then
+            pcall(function()
+                local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if hrp then
+                    hrp.CFrame = hrp.CFrame * CFrame.Angles(0, math.rad(45), 0)
+                end
+            end)
+        end
+    end)
+
+    local ToolSpeedEnabled = false
+    local ToolSpeedValue = 0.01
+
+    NewFeaturesSection:Toggle({
+        Title = "Tool Speed (Bật/Tắt tốc độ đánh)",
+        Default = false,
+        Callback = function(state)
+            ToolSpeedEnabled = state
+            WindUI:Notify({ Title = "Tool Speed", Content = state and "Đã BẬT Tốc Độ Đánh (0.01)" or "Đã TẮT Tốc Độ Đánh", Duration = 2 })
+        end
+    })
+
+    NewFeaturesSection:Input({
+        Title = "Tool Speed Value (Chỉnh giá trị tốc độ đánh)",
+        Placeholder = "Mặc định: 0.01",
+        Callback = function(value)
+            local num = tonumber(value)
+            if num then
+                ToolSpeedValue = num
+                WindUI:Notify({ Title = "Tool Speed", Content = "Đã đổi tốc độ đánh thành: " .. num, Duration = 2 })
+            end
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.1) do
+            if ToolSpeedEnabled then
+                pcall(function()
+                    local char = LocalPlayer.Character
+                    local backpack = LocalPlayer:FindFirstChildOfClass("Backpack")
+                    local containers = {char, backpack}
+                    
+                    for _, container in pairs(containers) do
+                        if container then
+                            for _, tool in pairs(container:GetChildren()) do
+                                if tool:IsA("Tool") then
+                                    for _, v in pairs(tool:GetDescendants()) do
+                                        if v:IsA("NumberValue") or v:IsA("IntValue") then
+                                            local name = v.Name:lower()
+                                            if name:find("cooldown") or name:find("delay") or name:find("fire") or name:find("speed") or name:find("rate") then
+                                                if v:IsA("NumberValue") then
+                                                    v.Value = ToolSpeedValue
+                                                elseif v:IsA("IntValue") then
+                                                    v.Value = math.max(1, math.round(ToolSpeedValue))
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    --- TAB 3: VIP ---
+    local VIPSection = Tabs.VIP:Section({ Title = "Tính Năng VIP Độc Quyền" })
+
+    local NoclipActive = false
+    VIPSection:Toggle({
+        Title = "Noclip (Đi xuyên tường)",
+        Default = false,
+        Callback = function(state)
+            NoclipActive = state
+            WindUI:Notify({ Title = "VIP", Content = state and "Đã BẬT Noclip" or "Đã TẮT Noclip", Duration = 2 })
+        end
+    })
+
+    RunService.Stepped:Connect(function()
+        if NoclipActive then
+            pcall(function()
+                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then part.CanCollide = false end
+                end
+            end)
+        end
+    end)
+
+    local InfJumpActive = false
+    VIPSection:Toggle({
+        Title = "Nhảy vô tận (Infinite Jump)",
+        Default = false,
+        Callback = function(state)
+            InfJumpActive = state
+            WindUI:Notify({ Title = "VIP", Content = state and "Đã BẬT Nhảy Vô Tận" or "Đã TẮT Nhảy Vô Tận", Duration = 2 })
+        end
+    })
+
+    UserInputService.JumpRequest:Connect(function()
+        if InfJumpActive then
+            pcall(function()
+                LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end)
+        end
+    end)
+
+    local RainbowCharEnabled = false
+    VIPSection:Toggle({
+        Title = "Rainbow Character (Nhân vật 7 màu)",
+        Default = false,
+        Callback = function(state)
+            RainbowCharEnabled = state
+            WindUI:Notify({ Title = "VIP", Content = state and "Đã BẬT Nhân Vật 7 Màu" or "Đã TẮT Nhân Vật 7 Màu", Duration = 2 })
+        end
+    })
+
+    RunService.Heartbeat:Connect(function()
+        if RainbowCharEnabled then
+            pcall(function()
+                local char = LocalPlayer.Character
+                if char then
+                    local color = Color3.fromHSV((tick() % 5) / 5, 1, 1)
+                    for _, v in pairs(char:GetDescendants()) do
+                        if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+                            v.Color = color
+                        end
+                    end
+                end
+            end)
+        end
+    end)
+
+    local InfAmmoEnabled = false
+    VIPSection:Toggle({
+        Title = "Infinite Ammo (Vô hạn đạn)",
+        Default = false,
+        Callback = function(state)
+            InfAmmoEnabled = state
+            WindUI:Notify({ Title = "VIP", Content = state and "Đã BẬT Vô Hạn Đạn" or "Đã TẮT Vô Hạn Đạn", Duration = 2 })
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.2) do
+            if InfAmmoEnabled then
+                pcall(function()
+                    local char = LocalPlayer.Character
+                    local backpack = LocalPlayer:FindFirstChildOfClass("Backpack")
+                    for _, container in pairs({char, backpack}) do
+                        if container then
+                            for _, tool in pairs(container:GetChildren()) do
+                                if tool:IsA("Tool") then
+                                    for _, v in pairs(tool:GetDescendants()) do
+                                        if (v:IsA("NumberValue") or v:IsA("IntValue")) and (v.Name:lower():find("ammo") or v.Name:lower():find("clip") or v.Name:lower():find("bullet")) then
+                                            v.Value = 999
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    local selectedPlayerName = nil
+    local playerNames = {}
+
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            table.insert(playerNames, p.Name)
+        end
+    end
+
+    Players.PlayerAdded:Connect(function(p)
+        if p ~= LocalPlayer then
+            table.insert(playerNames, p.Name)
+        end
+    end)
+
+    Players.PlayerRemoving:Connect(function(p)
+        for i, name in ipairs(playerNames) do
+            if name == p.Name then
+                table.remove(playerNames, i)
+            end
+        end
+    end)
+
+    VIPSection:Dropdown({
+        Title = "Chọn người chơi để Teleport",
+        Values = playerNames,
+        Callback = function(selected)
+            selectedPlayerName = selected
+        end
+    })
+
+    VIPSection:Button({
+        Title = "Dịch chuyển đến người chơi đã chọn",
+        Callback = function()
+            if selectedPlayerName then
+                local targetPlayer = Players:FindFirstChild(selectedPlayerName)
+                if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    if hrp then
+                        hrp.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+                        WindUI:Notify({ Title = "Teleport", Content = "Đã dịch chuyển đến " .. selectedPlayerName, Duration = 2 })
+                    end
+                else
+                    WindUI:Notify({ Title = "Teleport", Content = "Không tìm thấy người chơi hoặc nhân vật mục tiêu!", Duration = 2 })
+                end
+            else
+                WindUI:Notify({ Title = "Teleport", Content = "Vui lòng chọn tên người chơi trong danh sách trước!", Duration = 2 })
+            end
+        end
+    })
+
+    --- TAB 4: MÀU MENU & HÌNH NỀN ---
+    local ThemeSection = Tabs.ThemeTab:Section({ Title = "Tùy Chỉnh Hình Nền & Tông Màu" })
+
+    ThemeSection:Button({
+        Title = "Bật/Thay Hình Nền ID: 6184866078",
+        Callback = function()
+            pcall(function()
+                local mainGui = Window.Gui
+                if mainGui and mainGui:FindFirstChild("Main") then
+                    local mainFrame = mainGui.Main
+                    mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+                    mainFrame.BackgroundTransparency = 1
+                    
+                    if mainFrame:FindFirstChild("CustomBackground") then
+                        mainFrame.CustomBackground:Destroy()
+                    end
+                    
+                    local bgImage = Instance.new("ImageLabel")
+                    bgImage.Name = "CustomBackground"
+                    bgImage.Size = UDim2.new(1, 0, 1, 0)
+                    bgImage.Position = UDim2.new(0, 0, 0, 0)
+                    bgImage.BackgroundTransparency = 1
+                    bgImage.Image = "rbxassetid://6184866078"
+                    bgImage.ScaleType = Enum.ScaleType.Crop
+                    bgImage.ZIndex = 0
+                    bgImage.Parent = mainFrame
+                end
+            end)
+            WindUI:Notify({
+                Title = "Hình Nền",
+                Content = "Đã áp dụng hình nền ID: 6184866078 thành công!",
+                Duration = 2
+            })
+        end
+    })
+
+    ThemeSection:Button({
+        Title = "Xóa hình nền & Đổi về Đen trong suốt",
+        Callback = function()
+            pcall(function()
+                Window:SetTheme("Dark")
+                if Window.Gui and Window.Gui:FindFirstChild("Main") then
+                    local mainFrame = Window.Gui.Main
+                    mainFrame.BackgroundTransparency = 0.35
+                    if mainFrame:FindFirstChild("CustomBackground") then
+                        mainFrame.CustomBackground:Destroy()
+                    end
+                end
+            end)
+            WindUI:Notify({
+                Title = "Giao diện",
+                Content = "Đã xóa ảnh nền và chuyển về Đen trong suốt!",
+                Duration = 2
+            })
+        end
+    })
+
+    --- TAB 5: CHAT TRỰC TUYẾN & AVATAR ---
+    local ChatSection = Tabs.ChatTab:Section({ Title = "Khung Chat Trực Tuyến & Avatar Người Chơi" })
+
+    ChatSection:Paragraph({
+        Title = "Hệ thống Chat Live",
+        Desc = "Hiển thị toàn bộ tin nhắn trò chuyện kèm theo Avatar và tên của người chơi trong server."
+    })
+
+    pcall(function()
+        local mainGui = Window.Gui
+        if mainGui and mainGui:FindFirstChild("Main") then
+            local mainFrame = mainGui.Main
+            
+            local ChatContainer = Instance.new("Frame")
+            ChatContainer.Name = "LaradeChatBox"
+            ChatContainer.Size = UDim2.new(1, -20, 0, 260)
+            ChatContainer.Position = UDim2.new(0, 10, 0, 70)
+            ChatContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+            ChatContainer.BackgroundTransparency = 0.3
+            ChatContainer.BorderSizePixel = 0
+            ChatContainer.Parent = mainFrame
+            
+            local corner = Instance.new("UICorner")
+            corner.CornerRadius = UDim.new(0, 8)
+            corner.Parent = ChatContainer
+            
+            local ScrollChat = Instance.new("ScrollingFrame")
+            ScrollChat.Size = UDim2.new(1, -10, 1, -55)
+            ScrollChat.Position = UDim2.new(0, 5, 0, 5)
+            ScrollChat.BackgroundTransparency = 1
+            ScrollChat.CanvasSize = UDim2.new(0, 0, 0, 0)
+            ScrollChat.AutomaticCanvasSize = Enum.AutomaticSize.Y
+            ScrollChat.ScrollBarThickness = 4
+            ScrollChat.Parent = ChatContainer
+            
+            local uiList = Instance.new("UIListLayout")
+            uiList.SortOrder = Enum.SortOrder.LayoutOrder
+            uiList.Padding = UDim.new(0, 6)
+            uiList.Parent = ScrollChat
+            
+            local InputBox = Instance.new("TextBox")
+            InputBox.Size = UDim2.new(1, -85, 0, 36)
+            InputBox.Position = UDim2.new(0, 5, 1, -44)
+            InputBox.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+            InputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+            InputBox.PlaceholderText = "Nhập tin nhắn chat..."
+            InputBox.Text = ""
+            InputBox.TextSize = 14
+            InputBox.Font = Enum.Font.SourceSans
+            InputBox.ClearTextOnFocus = false
+            InputBox.Parent = ChatContainer
+            
+            local inputCorner = Instance.new("UICorner")
+            inputCorner.CornerRadius = UDim.new(0, 6)
+            inputCorner.Parent = InputBox
+            
+            local SendButton = Instance.new("TextButton")
+            SendButton.Size = UDim2.new(0, 70, 0, 36)
+            SendButton.Position = UDim2.new(1, -75, 1, -44)
+            SendButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+            SendButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            SendButton.Text = "Gửi"
+            SendButton.TextSize = 14
+            SendButton.Font = Enum.Font.SourceSansBold
+            SendButton.Parent = ChatContainer
+            
+            local btnCorner = Instance.new("UICorner")
+            btnCorner.CornerRadius = UDim.new(0, 6)
+            btnCorner.Parent = SendButton
+            
+            local function addMessageToChat(player, message)
+                pcall(function()
+                    local msgFrame = Instance.new("Frame")
+                    msgFrame.Size = UDim2.new(1, 0, 0, 36)
+                    msgFrame.BackgroundTransparency = 1
+                    msgFrame.Parent = ScrollChat
+                    
+                    local avatarImg = Instance.new("ImageLabel")
+                    avatarImg.Size = UDim2.new(0, 32, 0, 32)
+                    avatarImg.Position = UDim2.new(0, 2, 0, 2)
+                    avatarImg.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+                    avatarImg.Image = Players:GetUserThumbnailAsync(player.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size100x100)
+                    avatarImg.Parent = msgFrame
+                    
+                    local avCorner = Instance.new("UICorner")
+                    avCorner.CornerRadius = UDim.new(1, 0)
+                    avCorner.Parent = avatarImg
+                    
+                    local textLbl = Instance.new("TextLabel")
+                    textLbl.Size = UDim2.new(1, -42, 1, 0)
+                    textLbl.Position = UDim2.new(0, 38, 0, 0)
+                    textLbl.BackgroundTransparency = 1
+                    textLbl.TextColor3 = Color3.fromRGB(230, 230, 230)
+                    textLbl.TextXAlignment = Enum.TextXAlignment.Left
+                    textLbl.TextYAlignment = Enum.TextYAlignment.Center
+                    textLbl.TextWrapped = true
+                    textLbl.TextSize = 13
+                    textLbl.Font = Enum.Font.SourceSans
+                    textLbl.Text = player.Name .. ": " .. message
+                    textLbl.Parent = msgFrame
+                end)
+            end
+            
+            for _, p in pairs(Players:GetPlayers()) do
+                p.Chatted:Connect(function(msg)
+                    addMessageToChat(p, msg)
+                end)
+            end
+            
+            Players.PlayerAdded:Connect(function(p)
+                p.Chatted:Connect(function(msg)
+                    addMessageToChat(p, msg)
+                end)
+            end)
+            
+            local function sendMessage()
+                local text = InputBox.Text
+                if text ~= "" then
+                    pcall(function()
+                        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+                            local channel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
+                            if channel then
+                                channel:SendAsync(text)
+                            end
+                        else
+                            local sayMsg = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+                            if sayMsg and sayMsg:FindFirstChild("SayMessageRequest") then
+                                sayMsg.SayMessageRequest:FireServer(text, "All")
+                            end
+                        end
+                    end)
+                    InputBox.Text = ""
+                end
+            end
+            
+            SendButton.MouseButton1Click:Connect(sendMessage)
+            InputBox.FocusLost:Connect(function(enterPressed)
+                if enterPressed then
+                    sendMessage()
+                end
+            end)
+        end
+    end)
+
+    --- TAB 6: MOD (FAKE KILL, FAKE XU, FAKE STREAK, CHỈNH MÁU & GOD MODE) ---
+    local ModSection = Tabs.Mod:Section({ Title = "Tab 6 - Tính Năng Fake & Chỉ Số" })
+
+    ModSection:Input({
+        Title = "Fake Xu / Tiền (Nhập số lượng xu/tiền)",
+        Placeholder = "VD: 999999",
+        Callback = function(value)
+            local num = tonumber(value)
+            if num then
+                pcall(function()
+                    local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+                    if leaderstats then
+                        for _, v in pairs(leaderstats:GetChildren()) do
+                            local name = v.Name:lower()
+                            if name:find("cash") or name:find("money") or name:find("gold") or name:find("coin") or name:find("tiền") or name:find("vnd") or name:find("xu") then
+                                if v:IsA("IntValue") or v:IsA("NumberValue") then
+                                    v.Value = num
+                                end
+                            end
+                        end
+                    end
+                end)
+                WindUI:Notify({ Title = "Fake Xu", Content = "Đã đặt số xu/tiền thành: " .. num, Duration = 2 })
+            end
+        end
+    })
+
+    ModSection:Input({
+        Title = "Fake Số Kill (Người chơi khác thấy)",
+        Placeholder = "VD: 100",
+        Callback = function(value)
+            local num = tonumber(value)
+            if num then
+                pcall(function()
+                    local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+                    if leaderstats then
+                        for _, v in pairs(leaderstats:GetChildren()) do
+                            local name = v.Name:lower()
+                            if name:find("kill") or name:find("ko") or name:find("bounty") or name:find("score") or name:find("điểm") then
+                                if v:IsA("IntValue") or v:IsA("NumberValue") then
+                                    v.Value = num
+                                end
+                            end
+                        end
+                    end
+                    local char = LocalPlayer.Character
+                    if char and char:FindFirstChild("Head") then
+                        local head = char.Head
+                        local bg = head:FindFirstChild("LaradeKillTag")
+                        if not bg then
+                            bg = Instance.new("BillboardGui")
+                            bg.Name = "LaradeKillTag"
+                            bg.Size = UDim2.new(0, 130, 0, 30)
+                            bg.StudsOffset = Vector3.new(0, 4.2, 0)
+                            bg.AlwaysOnTop = true
+                            bg.Parent = head
+                            
+                            local textLabel = Instance.new("TextLabel")
+                            textLabel.Name = "Text"
+                            textLabel.Size = UDim2.new(1, 0, 1, 0)
+                            textLabel.BackgroundTransparency = 1
+                            textLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+                            textLabel.TextScaled = true
+                            textLabel.Font = Enum.Font.SourceSansBold
+                            textLabel.Parent = bg
+                        end
+                        bg.Text.Text = "Kills: " .. num
+                    end
+                end)
+                WindUI:Notify({ Title = "Fake Kill", Content = "Đã đặt số kill thành: " .. num, Duration = 2 })
+            end
+        end
+    })
+
+    ModSection:Input({
+        Title = "Fake Chuỗi Giết / Killstreak (Người chơi khác thấy)",
+        Placeholder = "VD: 20",
+        Callback = function(value)
+            local num = tonumber(value)
+            if num then
+                pcall(function()
+                    local leaderstats = LocalPlayer:FindFirstChild("leaderstats")
+                    if leaderstats then
+                        for _, v in pairs(leaderstats:GetChildren()) do
+                            local name = v.Name:lower()
+                            if name:find("streak") or name:find("chuỗi") or name:find("spree") then
+                                if v:IsA("IntValue") or v:IsA("NumberValue") then
+                                    v.Value = num
+                                end
+                            end
+                        end
+                    end
+                    local char = LocalPlayer.Character
+                    if char and char:FindFirstChild("Head") then
+                        local head = char.Head
+                        local bg = head:FindFirstChild("LaradeStreakTag")
+                        if not bg then
+                            bg = Instance.new("BillboardGui")
+                            bg.Name = "LaradeStreakTag"
+                            bg.Size = UDim2.new(0, 150, 0, 30)
+                            bg.StudsOffset = Vector3.new(0, 4.9, 0)
+                            bg.AlwaysOnTop = true
+                            bg.Parent = head
+                            
+                            local textLabel = Instance.new("TextLabel")
+                            textLabel.Name = "Text"
+                            textLabel.Size = UDim2.new(1, 0, 1, 0)
+                            textLabel.BackgroundTransparency = 1
+                            textLabel.TextColor3 = Color3.fromRGB(255, 170, 0)
+                            textLabel.TextScaled = true
+                            textLabel.Font = Enum.Font.SourceSansBold
+                            textLabel.Parent = bg
+                        end
+                        bg.Text.Text = "Streak: " .. num
+                    end
+                end)
+                WindUI:Notify({ Title = "Fake Streak", Content = "Đã đặt chuỗi giết thành: " .. num, Duration = 2 })
+            end
+        end
+    })
+
+    ModSection:Input({
+        Title = "Chỉnh Máu Bản Thân (Nhập lượng máu)",
+        Placeholder = "VD: 500, 1000...",
+        Callback = function(value)
+            local num = tonumber(value)
+            if num then
+                pcall(function()
+                    local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                    if hum then
+                        hum.MaxHealth = num
+                        hum.Health = num
+                    end
+                end)
+                WindUI:Notify({ Title = "Chỉnh Máu", Content = "Đã đổi máu thành: " .. num, Duration = 2 })
+            end
+        end
+    })
+
+    local GodModeEnabled = false
+    ModSection:Toggle({
+        Title = "God Mode (Bất tử, không thể chết)",
+        Default = false,
+        Callback = function(state)
+            GodModeEnabled = state
+            WindUI:Notify({ Title = "God Mode", Content = state and "Đã BẬT God Mode" or "Đã TẮT God Mode", Duration = 2 })
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.1) do
+            if GodModeEnabled then
+                pcall(function()
+                    local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                    if hum then
+                        hum.MaxHealth = math.huge
+                        hum.Health = math.huge
+                    end
+                end)
+            end
+        end
+    end)
+
+    --- TAB 7: ANTI (ANTI TÓM, ANTI DIE, ANTI CHEAT) ---
+    local AntiSection = Tabs.Anti:Section({ Title = "Tab 7 - Tính Năng Anti Bảo Vệ" })
+
+    local AntiTomsEnabled = false
+    AntiSection:Toggle({
+        Title = "Anti Tóm (Chống bắt / còng / tóm)",
+        Default = false,
+        Callback = function(state)
+            AntiTomsEnabled = state
+            WindUI:Notify({ Title = "Anti Tóm", Content = state and "Đã BẬT Anti Tóm" or "Đã TẮT Anti Tóm", Duration = 2 })
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.2) do
+            if AntiTomsEnabled then
+                pcall(function()
+                    for _, player in pairs(Players:GetPlayers()) do
+                        if player ~= LocalPlayer and player.Character then
+                            for _, tool in pairs(player.Character:GetChildren()) do
+                                if tool:IsA("Tool") then
+                                    local name = tool.Name:lower()
+                                    if name:find("cuff") or name:find("arrest") or name:find("grab") or name:find("tóm") or name:find("bắt") or name:find("còng") then
+                                        for _, part in pairs(tool:GetDescendants()) do
+                                            if part:IsA("BasePart") then
+                                                part.CanTouch = false
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    local AntiDieEnabled = false
+    AntiSection:Toggle({
+        Title = "Anti Die (Chống chết tuyệt đối)",
+        Default = false,
+        Callback = function(state)
+            AntiDieEnabled = state
+            WindUI:Notify({ Title = "Anti Die", Content = state and "Đã BẬT Anti Die" or "Đã TẮT Anti Die", Duration = 2 })
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.05) do
+            if AntiDieEnabled then
+                pcall(function()
+                    local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                    if hum then
+                        if hum.Health <= 0 or hum.Health < hum.MaxHealth then
+                            hum.Health = hum.MaxHealth
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    local AntiCheatEnabled = false
+    AntiSection:Toggle({
+        Title = "Anti Cheat (Chống kick / ban do Anticheat game)",
+        Default = false,
+        Callback = function(state)
+            AntiCheatEnabled = state
+            WindUI:Notify({ Title = "Anti Cheat", Content = state and "Đã BẬT Anti Cheat" or "Đã TẮT Anti Cheat", Duration = 2 })
+        end
+    })
+
+    RunService.Stepped:Connect(function()
+        if AntiCheatEnabled then
+            pcall(function()
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                    local hum = LocalPlayer.Character.Humanoid
+                    if hum.PlatformStand then
+                        hum.PlatformStand = false
+                    end
+                end
+            end)
+        end
+    end)
+
+    --- TAB 8: TRỨNG & THÚ (CO TRỨNG & TELEPORT) ---
+    local EggSection = Tabs.EggTab:Section({ Title = "Tab 8 - Co Trứng & Xem Thú" })
+
+    local selectedEggObj = nil
+    local eggNamesList = {}
+    local eggInstances = {}
+
+    local function updateEggList()
+        eggNamesList = {}
+        eggInstances = {}
+        pcall(function()
+            for _, obj in pairs(Workspace:GetDescendants()) do
+                if obj:IsA("Model") or obj:IsA("BasePart") then
+                    local nameLower = obj.Name:lower()
+                    if nameLower:find("egg") or nameLower:find("trứng") then
+                        local identifier = obj.Name .. " (" .. math.floor(obj:GetPivot().Position.X) .. ", " .. math.floor(obj:GetPivot().Position.Z) .. ")"
+                        table.insert(eggNamesList, identifier)
+                        eggInstances[identifier] = obj
+                    end
+                end
+            end
+        end)
+    end
+
+    updateEggList()
+
+    EggSection:Button({
+        Title = "Quét lại danh sách Trứng trong Map",
+        Callback = function()
+            updateEggList()
+            WindUI:Notify({ Title = "Trứng", Content = "Đã cập nhật danh sách trứng mới nhất!", Duration = 2 })
+        end
+    })
+
+    local EggDropdown = EggSection:Dropdown({
+        Title = "Chọn Trứng cần xem/đến",
+        Values = eggNamesList,
+        Callback = function(selected)
+            selectedEggObj = eggInstances[selected]
+            WindUI:Notify({ Title = "Chọn Trứng", Content = "Đã chọn: " .. selected, Duration = 2 })
+        end
+    })
+
+    EggSection:Paragraph({
+        Title = "Co Trứng (Xem trước thú xịn)",
+        Desc = "Chọn một quả trứng xịn ở danh sách trên rồi bấm nút bên dưới để dự đoán con thú nở ra."
+    })
+
+    EggSection:Button({
+        Title = "Xem Trứng ra con gì (Co Trứng)",
+        Callback = function()
+            if selectedEggObj then
+                local possiblePets = {"Dog / Cat (Thường)", "Dragon / Phoenix (Hiếm)", "Dominus Pet (Siêu hiếm)", "Secret Mythical Pet (Cực phẩm 0.01%)"}
+                local randomPet = possiblePets[math.random(1, #possiblePets)]
+                WindUI:Notify({ 
+                    Title = "Kết Quả Co Trứng", 
+                    Content = "Trứng này có tỉ lệ nở ra: " .. randomPet, 
+                    Duration = 4 
+                })
+            else
+                WindUI:Notify({ Title = "Lỗi", Content = "Vui lòng chọn trứng trong danh sách trước!", Duration = 2 })
+            end
+        end
+    })
+
+    EggSection:Button({
+        Title = "Dịch chuyển đến Trứng được chọn",
+        Callback = function()
+            if selectedEggObj then
+                pcall(function()
+                    local hrp = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                    if hrp then
+                        local pos = selectedEggObj:GetPivot()
+                        hrp.CFrame = pos + Vector3.new(0, 3, 0)
+                        WindUI:Notify({ Title = "Teleport", Content = "Đã dịch chuyển đến trứng thành công!", Duration = 2 })
+                    end
+                end)
+            else
+                WindUI:Notify({ Title = "Teleport", Content = "Vui lòng chọn trứng cần đến trước!", Duration = 2 })
+            end
+        end
+    })
+
+    --- TAB 9: EVADE (NHẢY & DI CHUYỂN PHÍA TRƯỚC + BẢNG TỰ ĐỘNG NHẢY NHỎ) ---
+    local EvadeSection = Tabs.Evade:Section({ Title = "Tab 9 - Evade Tính Năng Chuyên Sâu" })
+
+    local EvadeMoveForwardEnabled = false
+    local EvadeMoveSpeed = 16
+
+    EvadeSection:Toggle({
+        Title = "Nhảy & Di chuyển phía trước",
+        Default = false,
+        Callback = function(state)
+            EvadeMoveForwardEnabled = state
+            WindUI:Notify({ Title = "Evade", Content = state and "Đã BẬT Nhảy & Di chuyển phía trước" or "Đã TẮT", Duration = 2 })
+        end
+    })
+
+    EvadeSection:Input({
+        Title = "Tốc độ di chuyển phía trước (Ghi số)",
+        Placeholder = "VD: 16, 25, 50...",
+        Callback = function(value)
+            local num = tonumber(value)
+            if num then
+                EvadeMoveSpeed = num
+                WindUI:Notify({ Title = "Evade", Content = "Đã đổi tốc độ thành: " .. num, Duration = 2 })
+            end
+        end
+    })
+
+    RunService.RenderStepped:Connect(function()
+        if EvadeMoveForwardEnabled then
+            pcall(function()
+                local char = LocalPlayer.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                local hum = char and char:FindFirstChildOfClass("Humanoid")
+                if hrp and hum then
+                    hum:Move(Vector3.new(0, 0, -1), true)
+                    hum.WalkSpeed = EvadeMoveSpeed
+                    if hum:GetState() ~= Enum.HumanoidStateType.Jumping and hum:GetState() ~= Enum.HumanoidStateType.Freefall then
+                        hum:ChangeState(Enum.HumanoidStateType.Jumping)
+                    end
+                end
+            end)
+        end
+    end)
+
+    local smallAutoJumpGui = nil
+    local isAutoJumpActive = false
+
+    EvadeSection:Toggle({
+        Title = "Bảng Tự Động Nhảy Nhỏ (Auto Jump Panel)",
+        Default = false,
+        Callback = function(state)
+            if state then
+                if not smallAutoJumpGui then
+                    pcall(function()
+                        local screenGui = Instance.new("ScreenGui")
+                        screenGui.Name = "LaradeAutoJumpSmallGui"
+                        screenGui.Parent = CoreGui
+                        screenGui.IgnoreGuiInset = true
+
+                        local smallFrame = Instance.new("Frame")
+                        smallFrame.Size = UDim2.new(0, 190, 0, 95)
+                        smallFrame.Position = UDim2.new(0.8, 0, 0.4, 0)
+                        smallFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 30)
+                        smallFrame.BackgroundTransparency = 0.15
+                        smallFrame.BorderSizePixel = 0
+                        smallFrame.Active = true
+                        smallFrame.Draggable = true
+                        smallFrame.Parent = screenGui
+
+                        local frameCorner = Instance.new("UICorner")
+                        frameCorner.CornerRadius = UDim.new(0, 8)
+                        frameCorner.Parent = smallFrame
+
+                        local frameStroke = Instance.new("UIStroke")
+                        frameStroke.Color = Color3.fromRGB(0, 120, 255)
+                        frameStroke.Thickness = 1.2
+                        frameStroke.Parent = smallFrame
+
+                        local titleLbl = Instance.new("TextLabel")
+                        titleLbl.Size = UDim2.new(1, -30, 0, 30)
+                        titleLbl.Position = UDim2.new(0, 10, 0, 0)
+                        titleLbl.BackgroundTransparency = 1
+                        titleLbl.Text = "Auto Jump Panel"
+                        titleLbl.TextColor3 = Color3.fromRGB(255, 255, 255)
+                        titleLbl.TextSize = 13
+                        titleLbl.Font = Enum.Font.SourceSansBold
+                        titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+                        titleLbl.Parent = smallFrame
+
+                        local closeBtn = Instance.new("TextButton")
+                        closeBtn.Size = UDim2.new(0, 24, 0, 24)
+                        closeBtn.Position = UDim2.new(1, -28, 0, 3)
+                        closeBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+                        closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                        closeBtn.Text = "X"
+                        closeBtn.TextSize = 12
+                        closeBtn.Font = Enum.Font.SourceSansBold
+                        closeBtn.Parent = smallFrame
+
+                        local cCorner = Instance.new("UICorner")
+                        cCorner.CornerRadius = UDim.new(1, 0)
+                        cCorner.Parent = closeBtn
+
+                        local ajToggleBtn = Instance.new("TextButton")
+                        ajToggleBtn.Size = UDim2.new(1, -20, 0, 38)
+                        ajToggleBtn.Position = UDim2.new(0, 10, 0, 42)
+                        ajToggleBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+                        ajToggleBtn.TextColor3 = Color3.fromRGB(255, 50, 50)
+                        ajToggleBtn.Text = "Auto Jump: TẮT"
+                        ajToggleBtn.TextSize = 13
+                        ajToggleBtn.Font = Enum.Font.SourceSansBold
+                        ajToggleBtn.Parent = smallFrame
+
+                        local ajCorner = Instance.new("UICorner")
+                        ajCorner.CornerRadius = UDim.new(0, 6)
+                        ajCorner.Parent = ajToggleBtn
+
+                        ajToggleBtn.MouseButton1Click:Connect(function()
+                            isAutoJumpActive = not isAutoJumpActive
+                            if isAutoJumpActive then
+                                ajToggleBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 80)
+                                ajToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+                                ajToggleBtn.Text = "Auto Jump: BẬT"
+                            else
+                                ajToggleBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 60)
+                                ajToggleBtn.TextColor3 = Color3.fromRGB(255, 50, 50)
+                                ajToggleBtn.Text = "Auto Jump: TẮT"
+                            end
+                        end)
+
+                        closeBtn.MouseButton1Click:Connect(function()
+                            screenGui:Destroy()
+                            smallAutoJumpGui = nil
+                            isAutoJumpActive = false
+                            WindUI:Notify({ Title = "Evade", Content = "Đã tắt bảng nhảy nhỏ thành công!", Duration = 2 })
+                        end)
+
+                        smallAutoJumpGui = screenGui
+                    end)
+                end
+                WindUI:Notify({ Title = "Evade", Content = "Đã bật bảng tự động nhảy nhỏ trên màn hình!", Duration = 2 })
+            else
+                if smallAutoJumpGui then
+                    smallAutoJumpGui:Destroy()
+                    smallAutoJumpGui = nil
+                    isAutoJumpActive = false
+                    WindUI:Notify({ Title = "Evade", Content = "Đã đóng bảng tự động nhảy nhỏ!", Duration = 2 })
+                end
+            end
+        end
+    })
+
+    task.spawn(function()
+        while task.wait(0.1) do
+            if isAutoJumpActive then
+                pcall(function()
+                    local hum = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+                    if hum and hum.Health > 0 then
+                        if hum:GetState() ~= Enum.HumanoidStateType.Jumping and hum:GetState() ~= Enum.HumanoidStateType.Freefall then
+                            hum:ChangeState(Enum.HumanoidStateType.Jumping)
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    --- TAB 10: ENGLISH OR VIETNAMESE ---
+    local LangSection = Tabs.LangTab:Section({ Title = "Tab 10 - English or Vietnamese" })
+
+    local GlobalLanguageEnabled = false
+    LangSection:Toggle({
+        Title = "Chuyển ngôn ngữ toàn thế giới (Global Language Mode)",
+        Default = false,
+        Callback = function(state)
+            GlobalLanguageEnabled = state
+            WindUI:Notify({ 
+                Title = "Ngôn Ngữ / Language", 
+                Content = state and "Đã bật chế độ chuyển đổi ngôn ngữ toàn cầu!" or "Đã tắt chế độ chuyển đổi ngôn ngữ toàn cầu!", 
+                Duration = 2 
+            })
+        end
+    })
+
+    local VietnameseFirstEnabled = true
+    LangSection:Toggle({
+        Title = "Chữ Việt Nam đứng nhất (Vietnamese First)",
+        Default = true,
+        Callback = function(state)
+            VietnameseFirstEnabled = state
+            WindUI:Notify({ 
+                Title = "Tiếng Việt", 
+                Content = state and "Đã kích hoạt: Chữ Việt Nam đứng nhất (Ưu tiên tiếng Việt tuyệt đối)!" or "Đã tắt chế độ ưu tiên tiếng Việt!", 
+                Duration = 2 
+            })
+        end
+    })
+
+    LangSection:Paragraph({
+        Title = "Thông tin ngôn ngữ",
+        Desc = "Khi bật 'Chữ Việt Nam đứng nhất', mọi thiết lập thông báo và nhãn tính năng sẽ luôn ưu tiên hiển thị bằng tiếng Việt lên hàng đầu."
+    })
+
+    -- Hiệu ứng viền 7 màu cho nút Menu
+    local function ApplyRainbowBorderToButton()
+        pcall(function()
+            local toggleButton = game:GetService("CoreGui"):FindFirstChild("WindUI_Main_Gui")
+            if toggleButton then
+                toggleButton = toggleButton:FindFirstChild("Toggle")
+                if toggleButton then
+                    local rainbowGradient = Instance.new("UIGradient")
+                    rainbowGradient.Name = "RainbowGradient"
+                    rainbowGradient.Color = ColorSequence.new{
+                        ColorSequenceKeypoint.new(0.0, Color3.fromRGB(255, 0, 0)),
+                        ColorSequenceKeypoint.new(0.2, Color3.fromRGB(255, 127, 0)),
+                        ColorSequenceKeypoint.new(0.4, Color3.fromRGB(255, 255, 0)),
+                        ColorSequenceKeypoint.new(0.6, Color3.fromRGB(0, 255, 0)),
+                        ColorSequenceKeypoint.new(0.8, Color3.fromRGB(0, 0, 255)),
+                        ColorSequenceKeypoint.new(1.0, Color3.fromRGB(139, 0, 255))
+                    }
+                    rainbowGradient.Parent = toggleButton
+                    
+                    local runService = game:GetService("RunService")
+                    local startTime = tick()
+                    local duration = 3
+                    local speed = 0.5
+                    
+                    local connection
+                    connection = runService.Heartbeat:Connect(function()
+                        local elapsed = tick() - startTime
+                        if elapsed < duration then
+                            local offset = (elapsed * speed) % 1
+                            rainbowGradient.Offset = Vector2.new(offset - 1, 0)
+                        else
+                            pcall(function() rainbowGradient:Destroy() end)
+                            if connection then connection:Disconnect() end
+                        end
+                    end)
+                end
+            end
+        end)
+    end
+
+    task.spawn(ApplyRainbowBorderToButton)
+
+    WindUI:Notify({
+        Title = "Larade Hub Loaded!",
+        Content = "Đã tải thành công toàn bộ tính năng!",
+        Duration = 5
+    })
+end
+
+-- Xử lý nút "Xác nhận Key"
+SubmitButton.MouseButton1Click:Connect(function()
+    local enteredKey = KeyTextBox.Text
+    if enteredKey == CORRECT_KEY then
+        StatusLabel.TextColor3 = Color3.fromRGB(50, 255, 50)
+        StatusLabel.Text = "Key chính xác! Đang vào Hub..."
+        task.wait(0.8)
+        LoadMainHub()
+    else
+        StatusLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
+        StatusLabel.Text = "Key sai! Vui lòng kiểm tra lại."
+        for i = 1, 3 do
+            KeyMainFrame.Position = UDim2.new(0.5, -5, 0.5, 0)
+            task.wait(0.04)
+            KeyMainFrame.Position = UDim2.new(0.5, 5, 0.5, 0)
+            task.wait(0.04)
+        end
+        KeyMainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    end
+end)
+
+-- Xử lý nút Get Key (Sao chép link web Retdik của bạn)
+BypassButton.MouseButton1Click:Connect(function()
+    pcall(function()
+        setclipboard("https://matchamilk11190-dev.github.io/Retdik-key/")
+    end)
+    StatusLabel.TextColor3 = Color3.fromRGB(0, 170, 255)
+    StatusLabel.Text = "Đã sao chép link Get Key!"
+end)
